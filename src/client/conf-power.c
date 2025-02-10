@@ -22,8 +22,8 @@
 #include "../log.h"
 
 static int cmd_check_ext_type(struct cmd_env *env, const char *type);
-static int cmd_check_ext_pse_but_no(struct cmd_env *env, void *arg);
-static int cmd_check_ext_pd_but_no(struct cmd_env *env, void *arg);
+static int cmd_check_ext_pse_but_no(struct cmd_env *env, const void *arg);
+static int cmd_check_ext_pd_but_no(struct cmd_env *env, const void *arg);
 
 static int
 cmd_medpower(struct lldpctl_conn_t *conn, struct writer *w, struct cmd_env *env,
@@ -316,7 +316,7 @@ cmd_check_typeat_but_no(struct cmd_env *env, const void *arg)
 	return 1;
 }
 static int
-cmd_check_typeext_but_no(struct cmd_env *env, void *arg)
+cmd_check_typeext_but_no(struct cmd_env *env, const void *arg)
 {
 	const char *what = arg;
 	if (!cmdenv_get(env, "type-ext")) return 0;
@@ -348,7 +348,7 @@ cmd_check_ext_type(struct cmd_env *env, const char *type)
 	return (!strcmp(type, etype));
 }
 static int
-cmd_check_ext_pse_but_no(struct cmd_env *env, void *arg)
+cmd_check_ext_pse_but_no(struct cmd_env *env, const void *arg)
 {
 	const char *what = arg;
 	if (what)
@@ -357,7 +357,7 @@ cmd_check_ext_pse_but_no(struct cmd_env *env, void *arg)
 	return !!(cmd_check_ext_type(env, "1") || cmd_check_ext_type(env, "2"));
 }
 static int
-cmd_check_ext_pd_but_no(struct cmd_env *env, void *arg)
+cmd_check_ext_pd_but_no(struct cmd_env *env, const void *arg)
 {
 	const char *what = arg;
 
