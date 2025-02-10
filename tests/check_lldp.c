@@ -115,6 +115,19 @@ check_received_port_dot3(struct lldpd_port *sport, struct lldpd_port *rport)
 	ck_assert_int_eq(rport->p_macphy.autoneg_advertised,
 	    sport->p_macphy.autoneg_advertised);
 	ck_assert_int_eq(rport->p_macphy.mau_type, sport->p_macphy.mau_type);
+
+	// power attributes
+    ck_assert_int_eq(rport->p_power.devicetype, sport->p_power.devicetype);
+    ck_assert_int_eq(rport->p_power.supported, sport->p_power.supported);
+    ck_assert_int_eq(rport->p_power.enabled, sport->p_power.enabled);
+    ck_assert_int_eq(rport->p_power.paircontrol, sport->p_power.paircontrol);
+    ck_assert_int_eq(rport->p_power.pairs, sport->p_power.pairs);
+    ck_assert_int_eq(rport->p_power.class, sport->p_power.class);
+    ck_assert_int_eq(rport->p_power.powertype, sport->p_power.powertype);
+    ck_assert_int_eq(rport->p_power.source, sport->p_power.source);
+    ck_assert_int_eq(rport->p_power.priority, sport->p_power.priority);
+    ck_assert_int_eq(rport->p_power.requested, sport->p_power.requested);
+    ck_assert_int_eq(rport->p_power.allocated, sport->p_power.allocated);
 }
 #endif
 
