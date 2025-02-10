@@ -483,6 +483,19 @@ START_TEST(test_send_rcv_dot3)
 	chassis.c_cap_available = chassis.c_cap_enabled =
 	    LLDP_CAP_ROUTER | LLDP_CAP_WLAN;
 
+	/* Dot3 power attributes */
+	hardware.h_lport.p_power.devicetype = LLDP_DOT3_POWER_PSE;
+    hardware.h_lport.p_power.supported = 1;
+    hardware.h_lport.p_power.enabled = 1;
+    hardware.h_lport.p_power.paircontrol = 1;
+    hardware.h_lport.p_power.pairs = LLDP_DOT3_POWERPAIRS_SIGNAL;
+    hardware.h_lport.p_power.class = 3;
+    hardware.h_lport.p_power.powertype = LLDP_DOT3_POWER_8023AT_TYPE1;
+    hardware.h_lport.p_power.source = LLDP_DOT3_POWER_SOURCE_PRIMARY;
+    hardware.h_lport.p_power.priority = LLDP_DOT3_POWER_PRIO_HIGH;
+    hardware.h_lport.p_power.requested = 15000;
+    hardware.h_lport.p_power.allocated = 13000;
+
 	/* Build packet */
 	n = lldp_send(&test_lldpd, &hardware);
 	if (n != 0) {
