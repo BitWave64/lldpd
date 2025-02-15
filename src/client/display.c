@@ -451,7 +451,7 @@ display_port(struct writer *w, lldpctl_atom_t *port, int details)
 			tag_data(w,
 			    lldpctl_atom_get_str(dot3_power,
 				lldpctl_k_dot3_power_devicetype));
-			;
+
 			tag_end(w);
 			tag_start(w, "pairs", "Power pairs");
 			tag_data(w,
@@ -478,6 +478,12 @@ display_port(struct writer *w, lldpctl_atom_t *port, int details)
 				tag_data(w,
 				    lldpctl_atom_get_str(dot3_power,
 					lldpctl_k_dot3_power_source));
+				tag_end(w);
+
+	            tag_start(w, "pd-4pid", "PD supports powering of both Modes simultaneously");
+				tag_data(w,
+				    lldpctl_atom_get_str(dot3_power,
+					lldpctl_k_dot3_power_pd_4pid));
 				tag_end(w);
 
 				tag_start(w, "priority", "Power Priority");

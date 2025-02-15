@@ -100,6 +100,7 @@ cmd_dot3power_conf_at(struct lldpctl_conn_t *conn, struct writer *w,
 	const char *what = NULL;
 	int typeat = cmdenv_get(env, "typeat")[0] - '0';
 	const char *source = cmdenv_get(env, "source");
+	const char *pd_4pid = cmdenv_get(env, "pd-4pid");
 	if ((what = "802.3at type",
 		lldpctl_atom_set_int(dot3_power, lldpctl_k_dot3_power_type, typeat)) ==
 		NULL ||
@@ -112,6 +113,9 @@ cmd_dot3power_conf_at(struct lldpctl_conn_t *conn, struct writer *w,
 			(!strcmp(source, "both"))   ? LLDP_DOT3_POWER_SOURCE_BOTH :
 						      LLDP_DOT3_POWER_SOURCE_UNKNOWN)) ==
 		NULL ||
+	    (what = "pd-4pid",
+        lldpctl_atom_set_int(dot3_power, lldpctl_k_dot3_power_pd_4pid,
+		    (!strcmp(pd_4pid, "1")) ? 1 : 0)) == NULL ||
 	    (what = "priority",
 		lldpctl_atom_set_str(dot3_power, lldpctl_k_dot3_power_priority,
 		    cmdenv_get(env, "priority"))) == NULL ||
@@ -201,10 +205,6 @@ cmd_dot3power_conf_bt(struct lldpctl_conn_t *conn, struct writer *w,
 				lldpctl_atom_set_str(dot3_power,
 				    lldpctl_k_dot3_power_pd_status,
 				    cmdenv_get(env, "pd-status"))) == NULL ||
-			    (what = "PD 4pid",
-				lldpctl_atom_set_str(dot3_power,
-				    lldpctl_k_dot3_power_pd_4pid,
-				    cmdenv_get(env, "pd-4pid"))) == NULL ||
 			    (what = "PD load",
 				lldpctl_atom_set_str(dot3_power,
 				    lldpctl_k_dot3_power_pd_load,
@@ -443,7 +443,7 @@ cmd_check_env_power(struct cmd_env *env, const void *nothing)
 	if (!cmdenv_get(env, "powerpairs")) return 0;
 
 	if (cmdenv_get(env, "typeat")) {
-		ret &= (!!cmdenv_get(env, "source") && !!cmdenv_get(env, "priority") &&
+		ret &= (!!cmdenv_get(env, "pd-4pid") && !!cmdenv_get(env, "source") && !!cmdenv_get(env, "priority") &&
 		    !!cmdenv_get(env, "requested") && !!cmdenv_get(env, "allocated"));
 	}
 
@@ -452,8 +452,7 @@ cmd_check_env_power(struct cmd_env *env, const void *nothing)
 		    !!cmdenv_get(env, "class-b") && !!cmdenv_get(env, "class-ext"));
 
 		if (cmd_check_ext_pd_but_no(env, NULL)) {
-			ret &= (!!cmdenv_get(env, "pd-status") &&
-			    !!cmdenv_get(env, "pd-4pid") && mandatories);
+			ret &= !!cmdenv_get(env, "pd-status");
 		} else if (cmd_check_ext_pse_but_no(env, NULL)) {
 			ret &= (!!cmdenv_get(env, "pse-status") &&
 			    !!cmdenv_get(env, "pse-pairs-ext") &&
@@ -501,7 +500,7 @@ register_commands_dot3pow(struct cmd_node *configure_dot3)
 		    cmd_store_powerpairs_env_value_and_pop2, pp_map->string);
 	}
 
-	/* Class */
+	/* Power class */
 	struct cmd_node *class = commands_new(configure_dot3power, "class",
 	    "Power class", cmd_check_type_but_no, NULL, "class");
 	for (lldpctl_map_t *class_map = lldpctl_key_get_map(lldpctl_k_dot3_power_class);
@@ -585,15 +584,6 @@ register_commands_dot3pow(struct cmd_node *configure_dot3)
 	commands_new(pd_status, "3", "4-pair powered single-signature PD", NULL,
 	    cmd_store_env_value_and_pop2, "pd-status");
 
-	/* PD 4pid */
-	struct cmd_node *pd_4pid = commands_new(configure_dot3power, "pd-4pid",
-	    "802.3bt PD 4pid config (mandatory)", cmd_check_ext_pd_but_no, NULL,
-	    "pd-4pid");
-	commands_new(pd_4pid, "0", "PD does not support powering both modes", NULL,
-	    cmd_store_env_value_and_pop2, "pd-4pid");
-	commands_new(pd_4pid, "1", "PD supports powering both modes", NULL,
-	    cmd_store_env_value_and_pop2, "pd-4pid");
-
 	/* PSE status */
 	struct cmd_node *pse_status = commands_new(configure_dot3power, "pse-status",
 	    "802.3bt PSE status (mandatory)", cmd_check_ext_pse_but_no, NULL,
@@ -651,6 +641,15 @@ register_commands_dot3pow(struct cmd_node *configure_dot3)
 	    "802.3at dot3 power source (mandatory)", cmd_check_typeat_but_no, NULL,
 	    "source");
 	register_commands_pow_source(source);
+
+	/* PD 4pid */
+	struct cmd_node *pd_4pid = commands_new(configure_dot3power, "pd-4pid",
+	    "PD 4pid config (mandatory)", cmd_check_typeat_but_no, NULL,
+	    "pd-4pid");
+	commands_new(pd_4pid, "0", "PD does not support powering both modes", NULL,
+	    cmd_store_env_value_and_pop2, "pd-4pid");
+	commands_new(pd_4pid, "1", "PD supports powering both modes", NULL,
+	    cmd_store_env_value_and_pop2, "pd-4pid");
 
 	/* Priority */
 	struct cmd_node *priority = commands_new(configure_dot3power, "priority",

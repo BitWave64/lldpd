@@ -276,6 +276,7 @@ _lldp_send(struct lldpd *global, struct lldpd_hardware *hardware, u_int8_t c_id_
 			POKE_END_LLDP_TLV))
 			goto toobig;
 	}
+	log_info("serj", "pd-4pid: %d", port->p_power.pd_4pid);
 	/* Power */
 	if (port->p_power.devicetype) {
 		if (!((POKE_START_LLDP_TLV(LLDP_TLV_ORG)) &&
@@ -300,6 +301,7 @@ _lldp_send(struct lldpd *global, struct lldpd_hardware *hardware, u_int8_t c_id_
 					   1)
 				      << 6) |
 				  ((port->p_power.source % (1 << 2)) << 4) |
+				  ((port->p_power.pd_4pid % (1 << 1)) << 2) |
 				  ((port->p_power.priority % (1 << 2)) << 0))) &&
 				POKE_UINT16(port->p_power.requested) &&
 				POKE_UINT16(port->p_power.allocated)))
@@ -978,6 +980,8 @@ lldp_decode(struct lldpd *cfg, char *frame, int s, struct lldpd_hardware *hardwa
 						    (port->p_power.powertype &
 							(1 << 5 | 1 << 4)) >>
 						    4;
+						port->p_power.pd_4pid =
+						    (port->p_power.powertype & (1 << 2)) >> 2;
 						port->p_power.priority =
 						    (port->p_power.powertype &
 							(1 << 1 | 1 << 0));

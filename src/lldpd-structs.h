@@ -122,12 +122,12 @@ struct lldpd_dot3_power {
 	u_int8_t powertype; /* If set to LLDP_DOT3_POWER_8023AT_OFF,
 			       following fields have no meaning */
 	u_int8_t source;
+	u_int8_t pd_4pid;
 	u_int8_t priority;
 	u_int16_t requested;
 	u_int16_t allocated;
 
 	/* For 802.3BT */
-	u_int8_t pd_4pid;
 	u_int16_t requested_a;
 	u_int16_t requested_b;
 	u_int16_t allocated_a;

@@ -786,11 +786,11 @@ typedef enum {
 	lldpctl_k_dot3_power_type,	  /**< `(I,W)` 802.3AT power type */
 	lldpctl_k_dot3_power_source,	  /**< `(IS,W)` 802.3AT power source */
 	lldpctl_k_dot3_power_priority,	  /**< `(IS,W)` 802.3AT power priority */
+	lldpctl_k_dot3_power_pd_4pid,	    /**< `(IS)` 802.3BT both modes supported? */
 	lldpctl_k_dot3_power_allocated,	  /**< `(I,W)` 802.3AT power allocated */
 	lldpctl_k_dot3_power_requested,	  /**< `(I,W)` 802.3AT power requested */
 
 	/* 802.3bt additions */
-	lldpctl_k_dot3_power_pd_4pid,	    /**< `(IS)` 802.3BT both modes supported? */
 	lldpctl_k_dot3_power_requested_a,   /**< `(I)` 802.3BT power value requested for
 					       A */
 	lldpctl_k_dot3_power_requested_b,   /**< `(I)` 802.3BT power value requested for

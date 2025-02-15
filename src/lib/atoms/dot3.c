@@ -40,6 +40,15 @@ static lldpctl_map_t port_dot3_power_pd_source_map[] = {
 	{ LLDP_DOT3_POWER_SOURCE_PRIMARY, "Primary power source" }, { 0, NULL }
 };
 
+static struct atom_map port_dot3_power_pd_4pid_map = {
+	.key = lldpctl_k_dot3_power_pd_4pid,
+	.map = {
+		{ 0, "PD does not support powering both modes" },
+		{ 1, "PD supports powering both modes" },
+		{ 0, NULL},
+	},
+};
+
 static struct atom_map port_dot3_power_pairs_map = {
 	.key = lldpctl_k_dot3_power_pairs,
 	.map = { { LLDP_DOT3_POWERPAIRS_SIGNAL, "signal" },
@@ -60,15 +69,6 @@ static struct atom_map port_dot3_power_priority_map = {
 		{ LLDP_MED_POW_PRIO_HIGH,     "high" },
 		{ LLDP_MED_POW_PRIO_LOW,      "low" },
 		{ 0, NULL },
-	},
-};
-
-static struct atom_map port_dot3_power_pd_4pid_map = {
-	.key = lldpctl_k_dot3_power_pd_4pid,
-	.map = {
-		{ 0, "PD does not support powering both modes" },
-		{ 1, "PD supports powering both modes" },
-		{ 0, NULL},
 	},
 };
 
@@ -228,12 +228,12 @@ _lldpctl_atom_get_str_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key)
 			port_dot3_power_pse_source_map :
 			port_dot3_power_pd_source_map,
 		    port->p_power.source);
-	case lldpctl_k_dot3_power_priority:
-		return map_lookup(port_dot3_power_priority_map.map,
-		    port->p_power.priority);
 	case lldpctl_k_dot3_power_pd_4pid:
 		return map_lookup(port_dot3_power_pd_4pid_map.map,
 		    port->p_power.pd_4pid);
+	case lldpctl_k_dot3_power_priority:
+		return map_lookup(port_dot3_power_priority_map.map,
+		    port->p_power.priority);
 	case lldpctl_k_dot3_power_pse_status:
 		return map_lookup(port_dot3_power_pse_status_map.map,
 		    port->p_power.pse_status);
@@ -289,6 +289,8 @@ _lldpctl_atom_get_int_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key)
 		return port->p_power.powertype;
 	case lldpctl_k_dot3_power_source:
 		return port->p_power.source;
+	case lldpctl_k_dot3_power_pd_4pid:
+		return port->p_power.pd_4pid;
 	case lldpctl_k_dot3_power_priority:
 		return port->p_power.priority;
 	case lldpctl_k_dot3_power_requested:
@@ -296,8 +298,6 @@ _lldpctl_atom_get_int_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key)
 	case lldpctl_k_dot3_power_allocated:
 		return port->p_power.allocated * 100;
 	/* 802.3bt additions */
-	case lldpctl_k_dot3_power_pd_4pid:
-		return port->p_power.pd_4pid;
 	case lldpctl_k_dot3_power_requested_a:
 		return port->p_power.requested_a * 100;
 	case lldpctl_k_dot3_power_requested_b:
@@ -391,7 +391,7 @@ _lldpctl_atom_set_int_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key,
 			goto bad;
 		}
 	case lldpctl_k_dot3_power_class:
-		if (value < 0 || value > 5) goto bad;
+		if (value < 1 || value > 5) goto bad;
 		port->p_power.class = value;
 		return atom;
 	case lldpctl_k_dot3_power_type:
@@ -407,6 +407,11 @@ _lldpctl_atom_set_int_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key,
 	case lldpctl_k_dot3_power_source:
 		if (value < 0 || value > 3) goto bad;
 		port->p_power.source = value;
+		return atom;
+	case lldpctl_k_dot3_power_pd_4pid:
+		log_info("serj", "%s %d Atom set pd-4pid: %ld", __FUNCTION__, __LINE__, value);
+		if (value < 0 || value > 1) goto bad;
+		port->p_power.pd_4pid = value;
 		return atom;
 	case lldpctl_k_dot3_power_priority:
 		switch (value) {
