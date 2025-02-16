@@ -432,6 +432,22 @@ _lldpctl_atom_set_int_dot3_power(lldpctl_atom_t *atom, lldpctl_key_t key,
 		if (value < 0) goto bad;
 		port->p_power.requested = value / 100;
 		return atom;
+	case lldpctl_k_dot3_power_requested_a:
+		if (value < 0) goto bad;
+		port->p_power.requested_a = value / 100;
+		return atom;
+	case lldpctl_k_dot3_power_requested_b:
+		if (value < 0) goto bad;
+		port->p_power.requested_b = value / 100;
+		return atom;
+	case lldpctl_k_dot3_power_allocated_a:
+		if (value < 0) goto bad;
+		port->p_power.allocated_a = value / 100;
+		return atom;
+	case lldpctl_k_dot3_power_allocated_b:
+		if (value < 0) goto bad;
+		port->p_power.allocated_b = value / 100;
+		return atom;
 	default:
 		SET_ERROR(atom->conn, LLDPCTL_ERR_NOT_EXIST);
 		return NULL;

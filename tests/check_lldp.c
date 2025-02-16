@@ -131,7 +131,10 @@ check_received_port_dot3(struct lldpd_port *sport, struct lldpd_port *rport)
     ck_assert_int_eq(rport->p_power.allocated, sport->p_power.allocated);
 
 	// 803.3bt
-//    ck_assert_int_eq(rport->p_power.requested_a, sport->p_power.requested_a); // FAIL
+    ck_assert_int_eq(rport->p_power.requested_a, sport->p_power.requested_a);
+    ck_assert_int_eq(rport->p_power.requested_b, sport->p_power.requested_b);
+	ck_assert_int_eq(rport->p_power.allocated_a, sport->p_power.allocated_a);
+    ck_assert_int_eq(rport->p_power.allocated_b, sport->p_power.allocated_b);
 }
 #endif
 
@@ -514,16 +517,16 @@ START_TEST(test_send_rcv_dot3)
     hardware.h_lport.p_power.requested = 15000;
     hardware.h_lport.p_power.allocated = 13000;
 
+    hardware.h_lport.p_power.type_ext = 1;
 	hardware.h_lport.p_power.requested_a = 10000;
-//    hardware.h_lport.p_power.pd_requested_mode_b = 5000;
-//    hardware.h_lport.p_power.pse_allocated_alternative_a = 12000;
-//    hardware.h_lport.p_power.pse_allocated_alternative_b = 6000;
-//    hardware.h_lport.p_power.pse_powering_status = 1;
+    hardware.h_lport.p_power.requested_b = 5000;
+	hardware.h_lport.p_power.allocated_a = 1234;
+    hardware.h_lport.p_power.allocated_b = 5678;
+    hardware.h_lport.p_power.pse_powering_status = 1;
 //    hardware.h_lport.p_power.pd_powered_status = 1;
 //    hardware.h_lport.p_power.pse_power_pairs_ext = 1;
 //    hardware.h_lport.p_power.dual_signature_power_class_ext_mode_b = 2;
 //    hardware.h_lport.p_power.power_class_ext = 4;
-//    hardware.h_lport.p_power.power_type_ext = 1;
 //    hardware.h_lport.p_power.pd_load = 8000;
 //    hardware.h_lport.p_power.pse_max_available_power = 20000;
 //    hardware.h_lport.p_power.autoclass_requested = 1;

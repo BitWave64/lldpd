@@ -808,6 +808,11 @@ typedef enum {
 	lldpctl_k_dot3_power_type_ext,	    /**< `(IS)` 802.3BT power type */
 	lldpctl_k_dot3_power_pd_load,	    /**< `(IS)` 802.3BT dualsig isolated? */
 	lldpctl_k_dot3_power_pse_max, /**< `(I)` 802.3BT maximum available power */
+	lldpctl_k_dot3_power_autoclass_pse_supported, /**< `(I)` 802.3BT PSE Autoclass Support  */
+	lldpctl_k_dot3_power_autoclass_completed, /**< `(I)` 802.3BT Autoclass completed  */
+	lldpctl_k_dot3_power_autoclass_requested, /**< `(I)` 802.3BT Autoclass requested  */
+	lldpctl_k_dot3_power_down_requested, /**< `(I)` 802.3BT Power-down requested  */
+	lldpctl_k_dot3_power_down_time, /**< `(I)` 802.3BT Power-down time  */
 
 	lldpctl_k_port_vlan_pvid = 1500, /**< `(I)` Primary VLAN ID */
 	lldpctl_k_port_vlans,		 /**< `(AL)` List of VLAN */

@@ -276,7 +276,7 @@ _lldp_send(struct lldpd *global, struct lldpd_hardware *hardware, u_int8_t c_id_
 			POKE_END_LLDP_TLV))
 			goto toobig;
 	}
-	log_info("serj", "pd-4pid: %d", port->p_power.pd_4pid);
+	fprintf(stderr, "serj pd-4pid: %d", port->p_power.pd_4pid);
 	/* Power */
 	if (port->p_power.devicetype) {
 		if (!((POKE_START_LLDP_TLV(LLDP_TLV_ORG)) &&
@@ -306,6 +306,39 @@ _lldp_send(struct lldpd *global, struct lldpd_hardware *hardware, u_int8_t c_id_
 				POKE_UINT16(port->p_power.requested) &&
 				POKE_UINT16(port->p_power.allocated)))
 				goto toobig;
+		}
+		/* 802.3bt */
+		if (port->p_power.type_ext != LLDP_DOT3_POWER_8023BT_OFF) {
+			const u_int16_t power_status =
+				(port->p_power.class_ext & 0x0F) |
+				((port->p_power.class_b & 0x07) << 4) |
+				((port->p_power.class_a & 0x07) << 7) |
+				((port->p_power.pse_pairs_ext & 0x03) << 10) |
+				((port->p_power.pd_status & 0x03) << 12) |
+				((port->p_power.pse_status & 0x03) << 14);
+			const u_int8_t system_setup =
+				(port->p_power.pd_load & 0x01) |
+					((port->p_power.type_ext & 0x07) << 1);
+			const	u_int8_t autoclass =
+				(port->p_power.autoclass_requested & 0x01) |
+				((port->p_power.autoclass_completed & 0x01) << 1) |
+				((port->p_power.autoclass_pse_supported & 0x01) << 2);
+			const u_int32_t power_down = port->p_power.power_down_time |
+				((port->p_power.power_down_request & 0x3F) << 18);
+			if (!(
+				POKE_UINT16(port->p_power.requested_a) &&
+				POKE_UINT16(port->p_power.requested_b) &&
+				POKE_UINT16(port->p_power.allocated_a) &&
+				POKE_UINT16(port->p_power.allocated_b) &&
+				POKE_UINT16(power_status) &&
+				POKE_UINT8(system_setup) &&
+				POKE_UINT16(port->p_power.pse_max) &&
+				POKE_UINT8(autoclass) &&
+				POKE_UINT32(power_down)
+			)) {
+				goto toobig;
+			}
+
 		}
 		if (!(POKE_END_LLDP_TLV)) goto toobig;
 	}
@@ -996,6 +1029,7 @@ lldp_decode(struct lldpd *cfg, char *frame, int s, struct lldpd_hardware *hardwa
 						port->p_power.powertype =
 						    LLDP_DOT3_POWER_8023AT_OFF;
 					/* 802.3bt? */
+					log_info("serj", "tlv_size: %d", tlv_size);
 					if (tlv_size >= 29) {
 						port->p_power.requested_a = PEEK_UINT16;
 						port->p_power.requested_b = PEEK_UINT16;
@@ -1032,6 +1066,13 @@ lldp_decode(struct lldpd *cfg, char *frame, int s, struct lldpd_hardware *hardwa
 							 (1 << 3 | 1 << 2 | 1 << 1)) +
 							1);
 						port->p_power.pse_max = PEEK_UINT16;
+						u_int8_t autoclass = PEEK_UINT8;
+						port->p_power.autoclass_requested = autoclass & 0x01;
+						port->p_power.autoclass_completed = (autoclass & 0x02) >> 1;
+						port->p_power.autoclass_pse_supported = (autoclass & 0x04) >> 1;
+						u_int32_t power_down = PEEK_UINT32;
+						port->p_power.power_down_time = power_down & 0x03FFFFu;
+						port->p_power.power_down_request = power_down >> 18;
 					} else {
 						port->p_power.type_ext =
 						    LLDP_DOT3_POWER_8023BT_OFF;

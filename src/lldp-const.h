@@ -226,6 +226,22 @@
 #define LLDP_DOT3_POWER_PRIO_HIGH 2
 #define LLDP_DOT3_POWER_PRIO_LOW 3
 
+/* Dot3 79.3.2.10.1 Power Type ext */
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE3_PSE 0
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE4_PSE 1
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE3_SS_PD 2
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE3_DS_PD 3
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE4_SS_PD 4
+#define LLDP_DOT3_POWER_TYPE_EXT_TYPE4_DS_PD 5
+
+/* Dot3 79.3.2.10.2 PD Load */
+#define LLDP_DOT3_POWER_PD_LOAD_NON_ISOLATED 0
+#define LLDP_DOT3_POWER_PD_LOAD_ISOLATED 1
+
+/* Dot3 PSE Powering Status */
+#define LLDP_DOT3_POWER_PSE_STATUS_2PAIR_POWERING 1
+#define LLDP_DOT3_POWER_PSE_STATUS_4PAIR_POWERING_SINGLE_SIGNATURE_PD 1
+
 /* PMD Auto-Negotiation Advertised Capability field, from RFC 3636 (see
  * IANAifMauAutoNegCapBits). Unfortunately, we are limited to two bytes, so
  * higher speed capabilities will map to "other". */

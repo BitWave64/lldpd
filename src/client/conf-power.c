@@ -192,7 +192,8 @@ cmd_dot3power_conf_bt(struct lldpctl_conn_t *conn, struct writer *w,
 			    (what = "PSE max",
 				lldpctl_atom_set_str(dot3_power,
 				    lldpctl_k_dot3_power_pse_max,
-				    cmdenv_get(env, "pse-max"))) == NULL) {
+				    cmdenv_get(env, "pse-max"))) == NULL)
+				{
 				log_warnx("lldpctl",
 				    "unable to set LLDP Dot3 power value for %s on %s. %s.",
 				    what, name, lldpctl_last_strerror(conn));

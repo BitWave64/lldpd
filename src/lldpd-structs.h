@@ -141,6 +141,11 @@ struct lldpd_dot3_power {
 	u_int8_t type_ext;
 	u_int8_t pd_load;
 	u_int16_t pse_max;
+	u_int8_t autoclass_requested;
+	u_int8_t autoclass_completed;
+	u_int8_t autoclass_pse_supported;
+	u_int32_t power_down_time;
+	u_int32_t power_down_request;
 };
 MARSHAL(lldpd_dot3_power);
 #endif
